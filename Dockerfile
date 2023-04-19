@@ -45,8 +45,8 @@ RUN curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor 
     && apt-get -y --no-install-recommends install postgresql-14 postgresql-9.6 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY put-deb-files-here/*.deb /
-COPY put-version-file-here/version /usr/lib/version
+COPY packages/repos/*.deb /
+COPY packages/version /usr/lib/version
 COPY files/lib /lib/
 
 RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb \

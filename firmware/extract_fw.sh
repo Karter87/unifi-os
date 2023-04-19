@@ -44,22 +44,24 @@ check_tools_available() {
 process_firmware() {
   # Extract content
   binwalk --extract --run-as=root $FW_FILE
-  
+
+  # Copy version file
+  cp -vb _$FW_FILE.extracted/squashfs-root/usr/lib/version .
+
   # Extract packages from Ubiquity to package list file
   dpkg-query --admindir=_$FW_FILE.extracted/squashfs-root/var/lib/dpkg/ -W -f='${package} | ${Maintainer}\n' | grep -E "@ubnt.com|@ui.com" | cut -d "|" -f 1 > packages.full.list
 
-  # F
   while read pkg; do
     dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
-  done < packages.list
+  done < packages.req.list
 
   # Move all the deb packages to packages
   mkdir packages
   mv -v *_arm64.deb packages/
 
+
   # Cleanup
-  rm -Rf _$FW_FILE.extracted 
-  rm -v packages.list
+  #rm -Rf _$FW_FILE.extracted 
 
 }
 

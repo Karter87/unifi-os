@@ -1,3 +1,5 @@
+firmware/_firmware.bin.extracted/
+
 *.bin
 !spec/*.bin
 
