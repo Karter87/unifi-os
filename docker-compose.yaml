@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  uios:
+    build: 
+      dockerfile: Dockerfile.os
+    container_name: uios
+    volumes:
+      # - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /storage/srv:/srv
+      - /storage/data:/data
+      - /storage/persistent:/persistent
+      - /etc/localtime:/etc/localtime
+    environment:
+      - STORAGE_DISK=/dev/sda2
+    restart: unless-stopped
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+    privileged: true
+    network_mode: host
+    cgroup: host
+    ipc: private
+
+  uios-db:
+    build:
+      dockerfile: Dockerfile.db  
+    container_name: uios-db
+
