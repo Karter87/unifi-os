@@ -1,2 +1,5 @@
-firmware/firmware.bin
-firmware/packages/*.deb
+*.bin
+!spec/*.bin
+
+*.deb
+!spec/*.deb

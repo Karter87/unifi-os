@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-DL_FILE=./downloadlink
+DL_FILE=./link.txt
+FW_FILE=firmware.bin
 
 check_link() {
   if [ -f "$DL_FILE" ]; then
@@ -19,14 +20,14 @@ download_fw() {
   FW_VERSION=$(echo $FW_BINNAME | cut -d '-' -f 3)
   # echo $DL_FILENAME
   echo -e "\nProduct: $FW_PRODUCT-$FW_VERSION"
-  if [ -f "firmware.bin" ]; then
-    echo "Found firmware.bin"
+  if [ -f "$FW_FILE" ]; then
+    echo "Found $FW_FILE"
   else 
-    wget -O firmware.bin $DL_LINK
+    wget -O $FW_FILE $DL_LINK
   fi
 }
 
-check_tool_available() {
+check_tools_available() {
   app_name=$1
   for app in $app_name; do
     app_check=$(which $app)
@@ -42,14 +43,14 @@ check_tool_available() {
 
 process_firmware() {
   # Extract content
-  binwalk --extract --run-as=root firmware.bin
+  binwalk --extract --run-as=root $FW_FILE
   
   # Extract packages from Ubiquity to package list file
-  dpkg-query --admindir=_firmware.bin.extracted/squashfs-root/var/lib/dpkg/ -W -f='${package} | ${Maintainer}\n' | grep -E "@ubnt.com|@ui.com" | cut -d "|" -f 1 > packages.list
+  dpkg-query --admindir=_$FW_FILE.extracted/squashfs-root/var/lib/dpkg/ -W -f='${package} | ${Maintainer}\n' | grep -E "@ubnt.com|@ui.com" | cut -d "|" -f 1 > packages.full.list
 
   # F
   while read pkg; do
-    dpkg-repack --root=_firmware.bin.extracted/squashfs-root --arch=arm64 ${pkg}
+    dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
   done < packages.list
 
   # Move all the deb packages to packages
@@ -57,7 +58,7 @@ process_firmware() {
   mv -v *_arm64.deb packages/
 
   # Cleanup
-  rm -Rf _firmware.bin.extracted 
+  rm -Rf _$FW_FILE.extracted 
   rm -v packages.list
 
 }
@@ -65,7 +66,7 @@ process_firmware() {
 main() {
   check_link
   download_fw
-  check_tool_available "dpkg binwalk dpkg-repack"
+  check_tools_available "dpkg binwalk dpkg-repack"
   process_firmware 
 }
 
