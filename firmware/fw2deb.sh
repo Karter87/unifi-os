@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 UI_URL_FILE=./UI_URL
-LIST_TYPE=test # full, required, test or ui
+LIST_TYPE=required # full, required, test or ui
+FOLDER_DPKG=../source/tmp/dpkg
 
 root_only() {
 if [ "$EUID" -ne 0 ]
@@ -119,8 +120,17 @@ process_firmware() {
 postprocess_firmware() {
   # Copy version file
   echo -e "\nCopy files:"
-  mv -v ./*.deb ../source/tmp/dpkgs 
-  mv -v _$FW_FILE.extracted/squashfs-root/usr/lib/version ../source/usr/lib
+  if [ -d "$FOLDER_DPKG" ]; then 
+    if [ -d "$FOLDER_DPKG.old" ]; then
+      rm -fvR $FOLDER_DPKG.old
+    fi
+    mv -v $FOLDER_DPKG $FOLDER_DPKG.old
+  fi
+  
+  mkdir -p $FOLDER_DPKG
+  mv -v ./*.deb $FOLDER_DPKG 
+  
+#  mv -v _$FW_FILE.extracted/squashfs-root/usr/lib/version ../source/usr/lib
   fw_clean
 }
 
