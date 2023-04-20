@@ -1,5 +1,7 @@
 # Hardware
 
+> This is still under **development**
+
 ## NVR
 - Raspberry Pi 4 - 4GB
 - External SSD - 500GB
