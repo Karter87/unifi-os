@@ -1,5 +1,7 @@
 firmware/_firmware.bin*extracted/
 firmware/dpkg-repack*
+firmware/version
+firmware/packages.full.list
 
 *.bin
 !spec/*.bin
