@@ -1,0 +1,21 @@
+FROM arm64v8/debian:11
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get -y --no-install-recommends install \
+        apt \
+        binwalk \
+        dpkg \
+        dpkg-repack \
+        curl \
+        wget \
+        mount \
+        lsb-release \
+        sudo \
+        apt-transport-https \
+    && rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/firmware", "/source"]
+
+CMD ["/lib/systemd/systemd"]

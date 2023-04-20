@@ -62,7 +62,6 @@ get_url_info() {
   echo -e "- Filename: $UI_BINNAME"
   echo -e "- Platform: $FW_PLATFORM-$FW_VERSION"
   export FW_FILE
-
 }
 
 get_firmware() {
@@ -77,8 +76,6 @@ get_firmware() {
   fi
 }
 
-
-
 fw_extract() {
   if [ -d "_$FW_FILE.extracted/" ]; then
     echo "- WARNING: $FW_FILE already extracted, skipping binwalk, please remove folder"
@@ -90,11 +87,11 @@ fw_extract() {
 
 fw_repack() {
   # Extract packages from Ubiquity to package list file
-  
   ADMIN_DIR_DPKGS=_$FW_FILE.extracted/squashfs-root/var/lib/dpkg/
   if [ -d $ADMIN_DIR_DPKGS ]; then
     echo "- Get packages list maintened by Ubiquiti"
     dpkg-query --admindir=$ADMIN_DIR_DPKGS -W -f='${package} | ${Maintainer}\n' | grep -E "@ubnt.com|@ui.com" | cut -d "|" -f 1 > packages.ui.list
+    dpkg-query --admindir=$ADMIN_DIR_DPKGS -W -f='${package} | ${Maintainer}\n' | cut -d "|" -f 1 > packages.full.list
 
     echo "- repacking with packages.$LIST_TYPE.list"
     while read pkg; do
@@ -105,7 +102,6 @@ fw_repack() {
     exit 1
   fi 
 }
-
 
 fw_clean() {
   echo -e "\nCleaning"
@@ -130,10 +126,8 @@ postprocess_firmware() {
   mkdir -p $FOLDER_DPKG
   mv -v ./*.deb $FOLDER_DPKG 
   
-#  mv -v _$FW_FILE.extracted/squashfs-root/usr/lib/version ../source/usr/lib
   fw_clean
 }
-
 
 main() {
   prerequisites 
