@@ -6,6 +6,8 @@ firmware/UI_URL
 source/usr/lib/version
 source/tmp
 
+storage
+
 *.bin
 !spec/*.bin
 

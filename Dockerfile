@@ -45,9 +45,8 @@ RUN curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor 
     && apt-get -y --no-install-recommends install postgresql-14 postgresql-9.6 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY packages/repos/*.deb /
-COPY packages/version /usr/lib/version
-COPY files/lib /lib/
+COPY source/tmp/dpkg/*.deb /
+COPY source/lib /lib/
 
 RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb \
     && echo 'deb https://apt.artifacts.ui.com bullseye main release beta' > /etc/apt/sources.list.d/ubiquiti.list \
@@ -65,9 +64,8 @@ RUN apt-get -y --no-install-recommends install /ubnt-archive-keyring_*_arm64.deb
     && sed -i 's/rm -f/rm -rf/' /sbin/pg-cluster-upgrade \
     && sed -i 's/OLD_DB_CONFDIR=.*/OLD_DB_CONFDIR=\/etc\/postgresql\/9.6\/main/' /sbin/pg-cluster-upgrade
 
-COPY files/sbin /sbin/
-COPY files/usr /usr/
-COPY files/etc /etc/
+COPY source/sbin /sbin/
+COPY source/usr /usr/
 
 VOLUME ["/srv", "/data", "/persistent"]
 
