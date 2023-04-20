@@ -15,19 +15,20 @@ Note: No uSD card is being used.
 
 ## Docker cotainer
 
-- O/S: Debian buster (11)
-
+Debian buster 11
+Postgres
 
 ## Camera(s)
 - Unifi G3 Flex
 
 
 ## Disclaimer
-This repository is inspired by https://github.com/markdegrootnl/unifi-protect-arm64
+This repository is based on the work of: https://github.com/markdegrootnl/unifi-protect-arm64
+
 
 This Docker image is not associated with Ubiquity (Unifi) in any way. 
-We do not distribute any third party software and only use packages that are freely available on the internet.
+Used packages are freely available on the internet.
 
 This repository is pure for educational use. 
-For production, this solution is not sutable due to stability, imho.
+For production, this solution is not suitable due to lack of stability.
 
