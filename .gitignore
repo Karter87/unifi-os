@@ -1,4 +1,5 @@
-firmware/_firmware.bin.extracted/
+firmware/_firmware.bin*extracted/
+firmware/dpkg-repack*
 
 *.bin
 !spec/*.bin

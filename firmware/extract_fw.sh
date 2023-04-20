@@ -2,15 +2,21 @@
 
 DL_FILE=./link.txt
 FW_FILE=firmware.bin
+LIST_TYPE=required # required or full
 
 check_link() {
   if [ -f "$DL_FILE" ]; then
     DL_LINK=$(cat $DL_FILE)
+    if [ -z "DL_LINK"]; then
+      echo "Please paste the link in $DL_LINK"
+      exit 1
+    fi
     echo "Found >> $DL_LINK << in $DL_FILE"
   else
     echo "Not found $DL_FILE: Creating file"
     echo "Please paste the link in $DL_LINK"
     touch $DL_FILE
+    exit 1
   fi
 }
 
@@ -53,11 +59,11 @@ process_firmware() {
 
   while read pkg; do
     dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
-  done < packages.req.list
+  done < packages.$LIST_TYPE.list
 
   # Move all the deb packages to packages
-  mkdir packages
-  mv -v *_arm64.deb packages/
+  mkdir dpkg
+  mv -v *_arm64.deb dpkg/
 
 
   # Cleanup
@@ -66,10 +72,13 @@ process_firmware() {
 }
 
 main() {
+  # Check if run as root
   check_link
-  download_fw
   check_tools_available "dpkg binwalk dpkg-repack"
+
+  download_fw
   process_firmware 
+
 }
 
 main
