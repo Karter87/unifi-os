@@ -1,6 +1,7 @@
 firmware/_*extracted/
 
-firmware/packages.ui.list
+firmware/packages-*.csv
+firmware/packages-*.txt
 firmware/UI_URL
 
 source/usr/lib/version

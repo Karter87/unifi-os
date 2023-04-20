@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 UI_URL_FILE=./UI_URL
-LIST_TYPE=required # full, required, test or ui
+LIST_TYPE=keys # full, required, keys or ui
 FOLDER_DPKG=../source/tmp/dpkg
 
 root_only() {
@@ -92,11 +92,13 @@ fw_repack() {
     echo "- Get packages list maintened by Ubiquiti"
     dpkg-query --admindir=$ADMIN_DIR_DPKGS -W -f='${package} | ${Maintainer}\n' | grep -E "@ubnt.com|@ui.com" | cut -d "|" -f 1 > packages.ui.list
     dpkg-query --admindir=$ADMIN_DIR_DPKGS -W -f='${package} | ${Maintainer}\n' | cut -d "|" -f 1 > packages.full.list
-
+    
+    # dpkg-query --admindir=firmware/_fw-UCKP-3.0.17.bin.extracted/squashfs-root/var/lib/dpkg/ -W -f='\"${package}\";\"${Version}\";\"${Architecture}\";\"${Maintainer}\"\n' > firmware/packages-UCKP.csv
+    cat packages/*.list > temp.list
     echo "- repacking with packages.$LIST_TYPE.list"
-    while read pkg; do
-      dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
-    done < packages.$LIST_TYPE.list
+    # while read pkg; do
+    #   dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
+    # done < temp.list
   else
     echo "- ERROR: $ADMIN_DIR_DPKGS not found, exiting..."
     exit 1
@@ -105,6 +107,7 @@ fw_repack() {
 
 fw_clean() {
   echo -e "\nCleaning"
+  rm -v temp.list
 }
 
 process_firmware() {
