@@ -2,6 +2,8 @@ FROM arm64v8/debian:11
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ENV BUILD_IN_CONTAINER=True
+
 RUN apt-get update \
     && apt-get -y --no-install-recommends install \
         apt \

@@ -1,16 +1,16 @@
+# Ignore the binwalked firmware
 firmware/_*extracted/
 
-firmware/packages-*.csv
-firmware/packages-*.txt
+# Ignore the used URL
 firmware/UI_URL
+
+# Packages
+firmware/packages*.csv
+firmware/packages*.txt
+firmware/packages*.list
 
 source/usr/lib/version
 source/tmp
 
-storage
-
 *.bin
-!spec/*.bin
-
-*.deb
-!spec/*.deb
+#*.deb

@@ -5,10 +5,17 @@ LIST_TYPE=keys # full, required, keys or ui
 FOLDER_DPKG=../source/tmp/dpkg
 
 root_only() {
-if [ "$EUID" -ne 0 ]
-	  then echo "Please run as root"
-		    exit
-fi
+  if [ "$EUID" -ne 0 ]; then 
+    echo "Please run as root"
+	  exit
+  fi
+}
+
+check_running_in_container() {
+  if [ -z ${BUILD_IN_CONTAINER+x} ]; then 
+    echo -e "BUILD_IN_CONTAINER variable is not defined,\nplease run $0 the build container" 
+    exit 1
+  fi
 }
 
 check_tools_installed() {
@@ -27,7 +34,9 @@ check_tools_installed() {
 }
 
 prerequisites() {
-  #clear
+  # Due to the Debian and Ubuntu mismatch of packages, a docker image is used to convert the fw to deb files.
+  check_running_in_container
+  # When not running in container, the following prerequisites are important. 
   root_only
   check_tools_installed "dpkg binwalk dpkg-repack"
 }
@@ -96,9 +105,9 @@ fw_repack() {
     # dpkg-query --admindir=firmware/_fw-UCKP-3.0.17.bin.extracted/squashfs-root/var/lib/dpkg/ -W -f='\"${package}\";\"${Version}\";\"${Architecture}\";\"${Maintainer}\"\n' > firmware/packages-UCKP.csv
     cat packages/*.list > temp.list
     echo "- repacking with packages.$LIST_TYPE.list"
-    # while read pkg; do
-    #   dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
-    # done < temp.list
+    while read pkg; do
+      dpkg-repack --root=_$FW_FILE.extracted/squashfs-root --arch=arm64 ${pkg}
+    done < temp.list
   else
     echo "- ERROR: $ADMIN_DIR_DPKGS not found, exiting..."
     exit 1
@@ -139,5 +148,6 @@ main() {
   process_firmware
   postprocess_firmware
 }
+
 
 main
