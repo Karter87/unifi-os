@@ -3,14 +3,14 @@ version: '3'
 services:
   uios:
     build: 
-      dockerfile: Dockerfile-test
+      dockerfile: Dockerfile
     container_name: uios
     volumes:
       # - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - ./storage/srv:/srv
       - ./storage/data:/data
       - ./storage/persistent:/persistent
-      - /etc/localtime:/etc/localtime
+#      - /etc/localtime:/etc/localtime
     environment:
       - STORAGE_DISK=/dev/sda2
     restart: unless-stopped
@@ -18,19 +18,6 @@ services:
       - /run
       - /run/lock
       - /tmp
-    privileged: true
-    network_mode: host
-    cgroup: host
-    ipc: private
-
-  uios-build:
-    build: 
-      dockerfile: ./firmware/Dockerfile-build
-    container_name: uios-build
-    volumes:
-      - ./firmware:/firmware
-      - ./source:/source
-    restart: unless-stopped
     privileged: true
     network_mode: host
     cgroup: host

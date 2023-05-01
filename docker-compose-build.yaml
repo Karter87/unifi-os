@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  uios-build:
+    build: 
+      dockerfile: ./firmware/Dockerfile-build
+    container_name: uios-build
+    volumes:
+      - ./firmware:/firmware
+      - ./source:/source
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    cgroup: host
+    ipc: private
