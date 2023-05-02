@@ -10,7 +10,6 @@ services:
       - ./storage/srv:/srv
       - ./storage/data:/data
       - ./storage/persistent:/persistent
-#      - /etc/localtime:/etc/localtime
     environment:
       - STORAGE_DISK=/dev/sda2
     restart: unless-stopped

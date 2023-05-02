@@ -14,3 +14,6 @@ source/tmp
 
 *.bin
 #*.deb
+
+# Ignore the Docker container storage files
+storage/

@@ -1,7 +1,6 @@
 #[1] Use Debian 11 base image for ARM64v8
 FROM arm64v8/debian:11
 ARG DEBIAN_NAME=bullseye
-
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Package versions
@@ -33,6 +32,7 @@ RUN apt-get update \
         vim-tiny \
         zstd \
         xz-utils \
+        openssh-server \
     && rm -rf /var/lib/apt/lists/*
 
 #[3] Install NodeJS on debian (https://github.com/nodesource/distributions#debinstall)
@@ -60,8 +60,9 @@ RUN curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor 
     && apt-get -y --no-install-recommends install postgresql-${PG_VERSION} \
     && rm -rf /var/lib/apt/lists/*
 
-#[7]
+#[6]
 COPY source/${DEBS_PATH}/*.deb /${DEBS_PATH}/
+#[7]
 COPY source/lib /lib/
 
 #[8] Adding ubnt repository
@@ -75,18 +76,20 @@ RUN apt-get -y --no-install-recommends install /${DEBS_PATH}/*.deb unifi-protect
     #&& rm -f /${DEBS_PATH}/*.deb \
     #&& rm -rf /var/lib/apt/lists/* 
 
-# #[9]
-# RUN echo "exit 0" > /usr/sbin/policy-rc.d \
-#     && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml \
-#     && mv /sbin/mdadm /sbin/mdadm.orig \
-#     && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig \
-#     && systemctl enable storage_disk dbpermissions \
-#     && pg_dropcluster --stop 9.6 main \
-#     && sed -i 's/rm -f/rm -rf/' /sbin/pg-cluster-upgrade \
-#     && sed -i 's/OLD_DB_CONFDIR=.*/OLD_DB_CONFDIR=\/etc\/postgresql\/9.6\/main/' /sbin/pg-cluster-upgrade
+#[10]
+RUN echo "exit 0" > /usr/sbin/policy-rc.d \
+    && sed -i 's/redirectHostname: unifi//' /usr/share/unifi-core/app/config/config.yaml \
+    && mv /sbin/mdadm /sbin/mdadm.orig \
+    && mv /sbin/ubnt-tools /sbin/ubnt-tools.orig \
+    && mv /usr/sbin/smartctl /usr/sbin/smartctl.orig \
+    && systemctl enable storage_disk dbpermissions \
+    && pg_dropcluster --stop 9.6 main \
+    && sed -i 's/rm -f/rm -rf/' /sbin/pg-cluster-upgrade \
+    && sed -i 's/OLD_DB_CONFDIR=.*/OLD_DB_CONFDIR=\/etc\/postgresql\/9.6\/main/' /sbin/pg-cluster-upgrade
 
-# #[X]
+#[11]
 COPY source/sbin /sbin/
+#[12]
 COPY source/usr /usr/
 
 VOLUME ["/srv", "/data", "/persistent"]

@@ -127,6 +127,9 @@ process_firmware() {
 
 postprocess_firmware() {
   # Copy version file
+  _$FW_FILE.extracted/squashfs-root/usr/lib/version ../source/usr/lib/
+
+  # Copy packages folder, backup old dpkg folder if exist
   echo -e "\nCopy files:"
   if [ -d "$FOLDER_DPKG" ]; then 
     if [ -d "$FOLDER_DPKG.old" ]; then

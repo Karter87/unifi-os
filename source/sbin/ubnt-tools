@@ -22,4 +22,6 @@ if [ "$1" == "id" ]; then
     echo "board.shortname=UCKP"
     echo "board.hwrev=1"
     echo "board.serialno=$serial"
+else
+    ubnt-tools.orig $1
 fi
